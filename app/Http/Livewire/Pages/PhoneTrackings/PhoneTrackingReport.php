@@ -12,7 +12,6 @@ class PhoneTrackingReport extends Component
 
     use WithForm;
 
-
     public bool $readyToDisplayCalls = false;
 
     public bool $readyToPlay = false;

@@ -18,8 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', App\Http\Livewire\Pages\Dashboard::class)->name('dashboard');
     Route::get('companies', App\Http\Livewire\Pages\Companies\CompanyIndex::class)->name('companies');
     Route::get('phone-trackings', App\Http\Livewire\Pages\PhoneTrackings\PhoneTrackingIndex::class)->name('phone-trackings');
-    Route::get('phone-trackings/{company}/reports', App\Http\Livewire\Pages\PhoneTrackings\PhoneTrackingReport::class)->name('report-phone-trackings');
-    Route::get('call-histories', App\Http\Livewire\Pages\PhoneNumbers\CallHistory::class)->name('call-histories');
+    // Route::get('phone-trackings/{company}/reports', App\Http\Livewire\Pages\PhoneTrackings\PhoneTrackingReport::class)->name('report-phone-trackings');
+    Route::get('call-histories/{company}', App\Http\Livewire\Pages\PhoneNumbers\CallHistory::class)->name('call-histories');
 });
 
 require __DIR__.'/auth.php';
