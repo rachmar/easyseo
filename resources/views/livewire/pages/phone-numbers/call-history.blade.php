@@ -15,19 +15,34 @@
                         <li>
                             <div class="flex items-center">
                             <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                            <a href="" class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Companies</a>
+                            <a href="" class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Phone Trackings</a>
                             </div>
                         </li>
                     </ol>
                 </nav>
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All Companies</h1>
             </div>
+
+            <div class="grid w-full mb-3 grid-cols-1 gap-4 mt-4 xl:grid-cols-4 2xl:grid-cols-2">
+                <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                    <div class="w-full">
+                        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Num of Calls</h3>
+                        <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">{{ $numOfCall }}</span>
+                        </div>
+                    </div>
+                    <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+                        <div class="w-full">
+                        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Num of Unique Calls</h3>
+                        <span class="text-2xl font-bold leading-none text-gray-900 sm:text-3xl dark:text-white">{{$numOfUniqueCall}}</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="sm:flex">
                 <div class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
                     <form class="lg:pr-3" action="#" method="GET">
                         <label for="companies-search" class="sr-only">Search</label>
                         <div class="relative mt-1 lg:w-64 xl:w-96">
-                            <input type="text" name="email" id="companies-search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search for companies" autocomplete="false">
+                            <input type="text" name="email" id="companies-search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search Calls" autocomplete="false">
                         </div>
                     </form>
                     <div class="flex pl-0 mt-3 space-x-3 sm:pl-3 sm:mt-0">
@@ -42,12 +57,6 @@
                             Generate Report
                         </a>
                     </div>
-                </div>
-                <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
-                    <button type="button" wire:click="create" class="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-primary-800">
-                        <svg class="w-5 h-5 mr-2 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                        Add Company
-                    </button>
                 </div>
             </div>
         </div>
@@ -74,8 +83,8 @@
                                 <x-atoms.tables.th wire:click="sortBy('price')" >
                                     Price @if($sortField === 'price') <span>{!! $sortDirection === 'asc' ? '&#x25B2;' : '&#x25BC;' !!}</span> @endif
                                 </x-atoms.tables.th>
-                                <x-atoms.tables.th wire:click="sortBy('created_at')" >
-                                    Created At @if($sortField === 'created_at') <span>{!! $sortDirection === 'asc' ? '&#x25B2;' : '&#x25BC;' !!}</span> @endif
+                                <x-atoms.tables.th wire:click="sortBy('date_created')" >
+                                    Created At @if($sortField === 'date_created') <span>{!! $sortDirection === 'asc' ? '&#x25B2;' : '&#x25BC;' !!}</span> @endif
                                 </x-atoms.tables.th>
                             </tr>
                         </x-molecules.tables.thead>
@@ -89,7 +98,7 @@
                             @foreach ($calls as $call)
                                 <tr>
                                     <x-atoms.tables.td>
-                                        <x-atoms.forms.checkbox id="checkbox-{{$call['sid']}}" wire:model="selectedItems" value="{{ $call['sid'] }}"/>
+                                        <x-atoms.forms.checkbox id="checkbox-{{$call['sid']}}" wire:model="selectedItems" value="{{ $call['sid'] }}" />
                                     </x-atoms.tables.td>
                                     <x-atoms.tables.td>{{ $call['from'] }}</x-atoms.tables.td>
                                     <x-atoms.tables.td>{{ $call['to'] }}</x-atoms.tables.td>
@@ -126,7 +135,6 @@
                                     </x-atoms.tables.td>
                                     <x-atoms.tables.td>{{ $call['price'] }}</x-atoms.tables.td>
                                     <x-atoms.tables.td>{{ $call['date_created'] }}</x-atoms.tables.td>
-
                                 </tr>
                             @endforeach
                         </x-molecules.tables.tbody>

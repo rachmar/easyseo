@@ -48,6 +48,18 @@ class CallHistory extends Component
     {
         $this->selectedCompany = Company::where('id', $company)->first();
         $calls = SignalWire::http($this->selectedCompany, '/api/laml/2010-04-01/Accounts/'.$this->selectedCompany->project_id.'/Calls??Status=completed');
+
+        $this->numOfCall = count($calls['calls'] ?? []);
+
+        $uniqueCalls = [];
+        foreach ($calls['calls'] as $call) {
+            if (isset($call['to'])) {
+                $uniqueCalls[] = $call['to'];
+            }
+        }
+
+        $this->numOfUniqueCall = count(array_unique($uniqueCalls) ?? []);
+
         $this->phoneNumbers = collect($calls['calls'] ?? []);
     }
 
@@ -101,9 +113,52 @@ class CallHistory extends Component
         ]);
     }
 
-    public function generateReport()
+    public function playRecordingEnded()
     {
-        dd($this->selectedItems);
+        $this->readyToPlay = false; 
     }
+
+    public function playRecording(string $currentPlayButton, string $recordingUri)
+    {   
+        $this->currentRecording = null;
+
+        $this->readyToPlay = false;
+
+        $this->playRecording = true;
+
+        $this->currentPlayButton = $currentPlayButton;
+        
+        $recordings = SignalWire::http($this->selectedCompany, $recordingUri);
+
+        if (isset($recordings['recordings']) && count($recordings['recordings']) > 0) {
+            $currentRecording = array_pop($recordings['recordings']);
+            if (isset($currentRecording['uri'])) {
+                $lastJsonPos = strrpos($currentRecording['uri'], '.json');
+                $this->currentRecording = 'https://'.$this->selectedCompany->space_url.substr_replace($currentRecording['uri'], '.mp3', $lastJsonPos);
+            }
+        }
+
+        $this->readyToPlay = true;
+
+        $this->playRecording = false; 
+
+        $this->dispatchBrowserEvent('playAudio');
+
+        $this->dispatchBrowserEvent('refreshComponent');
+
+    }
+
+    public function generateReport()
+    {   
+        $collection = $this->phoneNumbers;
+        $sidArray = $this->selectedItems;
+
+        $filteredCollection = $collection->filter(function ($item) use ($sidArray) {
+            return in_array($item['sid'], $sidArray);
+        })->toArray();
+
+        return redirect()->route('call-history-reports', ['company' => $this->selectedCompany->id, 'calls' =>  json_encode($filteredCollection)] );
+    }
+
 
 }

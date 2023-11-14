@@ -20,6 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::get('phone-trackings', App\Http\Livewire\Pages\PhoneTrackings\PhoneTrackingIndex::class)->name('phone-trackings');
     // Route::get('phone-trackings/{company}/reports', App\Http\Livewire\Pages\PhoneTrackings\PhoneTrackingReport::class)->name('report-phone-trackings');
     Route::get('call-histories/{company}', App\Http\Livewire\Pages\PhoneNumbers\CallHistory::class)->name('call-histories');
+    Route::get('call-histories/{company}/reports', App\Http\Livewire\Pages\PhoneNumbers\CallHistoryReport::class)->name('call-history-reports');
+
 });
 
 require __DIR__.'/auth.php';
